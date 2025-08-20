@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Sucesiones - Ingeniería en Informática</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>SUCESIONES</h1>
+        <h2>Ingeniería en Informática</h2>
+        <nav>
+            <ul>
+                <li><a href="#">Gráfica</a></li>
+                <li><a href="#">A jugar</a></li>
+                <li><a href="#">Código</a></li>
+                <li><a href="#">Info</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="grafico">
+    <div style="text-align:center; margin-bottom:20px;">
+        <label><input type="checkbox" id="showAritmetica" checked> Sucesión Aritmética</label>
+        <label style="margin-left:20px;"><input type="checkbox" id="showGeometrica" checked> Sucesión Geométrica</label>
+    </div>
+    <canvas id="miSucesion" width="600" height="400"></canvas>
+</main>
+
+<script>
+    // Funciones de sucesión
+    function sucesionAritmetica(n) { return 2 * n + 1; }
+    function sucesionGeometrica(n) { return 3 ** (n - 1); }
+
+    const nMax = 15;
+    const nValores = [];
+    const aValores = [];
+    const gValores = [];
+
+    for (let n = 1; n <= nMax; n++) {
+        nValores.push(n);
+        aValores.push(sucesionAritmetica(n));
+        gValores.push(sucesionGeometrica(n));
+    }
+
+    const ctx = document.getElementById('miSucesion').getContext('2d');
+
+    // Crear gráfico con ambas sucesiones inicialmente
+    let miGrafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: nValores,
+            datasets: [
+                {
+                    label: 'Sucesión Aritmética a_n',
+                    data: aValores,
+                    borderColor: 'rgb(19, 107, 165)',
+                    backgroundColor: 'rgba(19, 107, 165, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointBackgroundColor: 'rgb(19, 107, 165)'
+                },
+                {
+                    label: 'Sucesión Geométrica b_n',
+                    data: gValores,
+                    borderColor: 'rgb(220, 50, 50)',
+                    backgroundColor: 'rgba(220, 50, 50, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointBackgroundColor: 'rgb(220, 50, 50)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'n' } },
+                y: { title: { display: true, text: 'Valor' } }
+            }
+        }
+    });
+
+    // Función para actualizar visibilidad según checkboxes
+    function actualizarGrafico() {
+        miGrafico.data.datasets[0].hidden = !document.getElementById('showAritmetica').checked;
+        miGrafico.data.datasets[1].hidden = !document.getElementById('showGeometrica').checked;
+        miGrafico.update();
+    }
+
+    document.getElementById('showAritmetica').addEventListener('change', actualizarGrafico);
+    document.getElementById('showGeometrica').addEventListener('change', actualizarGrafico);
+</script>
+
+
+
+<section id="juego">
+    <h3>Adivina los valores faltantes</h3>
+    <label for="tipoSucesion">Elige una sucesión:</label>
+    <select id="tipoSucesion">
+        <option value="aritmetica">Aritmética</option>
+        <option value="geometrica">Geométrica</option>
+    </select>
+    <button onclick="generarJuego()">Generar juego</button>
+
+    <div id="secuencia"></div>
+    <button id="verificarBtn" onclick="verificarJuego()">Verificar</button>
+    <div id="resultado"></div>
+
+    <!-- Contenedor del gráfico del juego -->
+    <canvas id="graficoJuego" width="600" height="400" style="margin-top:30px; display:none;"></canvas>
+</section>
+
+<script>
+    // Variables para gráfico del juego
+let graficoJuego = null;
+
+// Funciones de sucesión aleatoria para el juego
+function sucesionAritmeticaAleatoria(n, a1, d) { return a1 + (n-1)*d; }
+function sucesionGeometricaAleatoria(n, b1, r) { return b1 * r**(n-1); }
+
+// Generar el juego
+function generarJuego() {
+    const tipo = document.getElementById('tipoSucesion').value;
+    const nJuego = 7;
+    const faltantes = 2;
+    let valores = [];
+
+    // Generar sucesión aleatoria
+    if(tipo === 'aritmetica') {
+        const a1 = Math.floor(Math.random()*10 + 1);
+        const d = Math.floor(Math.random()*5 + 1);
+        for(let n=1;n<=nJuego;n++) valores.push(sucesionAritmeticaAleatoria(n,a1,d));
+    } else {
+        const b1 = Math.floor(Math.random()*5 + 1);
+        const r = Math.floor(Math.random()*3 + 2);
+        for(let n=1;n<=nJuego;n++) valores.push(sucesionGeometricaAleatoria(n,b1,r));
+    }
+
+    // Elegir posiciones faltantes
+    const indicesFaltantes = [];
+    while(indicesFaltantes.length < faltantes) {
+        let rand = Math.floor(Math.random() * nJuego);
+        if(!indicesFaltantes.includes(rand)) indicesFaltantes.push(rand);
+    }
+
+    // Mostrar secuencia con inputs dentro de las cajas
+    const secuenciaDiv = document.getElementById('secuencia');
+    secuenciaDiv.innerHTML = '';
+    valores.forEach((v,i) => {
+        if(indicesFaltantes.includes(i)) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.dataset.index = i;
+            secuenciaDiv.appendChild(input);
+        } else {
+            const span = document.createElement('span');
+            span.textContent = v;
+            secuenciaDiv.appendChild(span);
+        }
+    });
+
+    document.getElementById('verificarBtn').style.display = 'inline-block';
+    document.getElementById('resultado').innerText = '';
+    document.getElementById('graficoJuego').style.display = 'none';
+
+    secuenciaDiv.dataset.valoresCorrectos = JSON.stringify(valores);
+    secuenciaDiv.dataset.indicesFaltantes = JSON.stringify(indicesFaltantes);
+}
+
+// Verificar respuestas y mostrar gráfico del juego
+function verificarJuego() {
+    const secuenciaDiv = document.getElementById('secuencia');
+    const valoresCorrectos = JSON.parse(secuenciaDiv.dataset.valoresCorrectos);
+    const indicesFaltantes = JSON.parse(secuenciaDiv.dataset.indicesFaltantes);
+
+    let aciertos = 0;
+    secuenciaDiv.querySelectorAll('input').forEach(input => {
+        const index = input.dataset.index;
+        if(Number(input.value) === valoresCorrectos[index]) aciertos++;
+    });
+
+    const resultadoDiv = document.getElementById('resultado');
+    if(aciertos === indicesFaltantes.length) {
+        resultadoDiv.innerText = '¡Correcto! 🎉';
+
+        // Mostrar todos los valores en cajas
+        secuenciaDiv.innerHTML = '';
+        valoresCorrectos.forEach(v => {
+            const span = document.createElement('span');
+            span.textContent = v;
+            secuenciaDiv.appendChild(span);
+        });
+
+        // Mostrar gráfico del juego
+        const canvas = document.getElementById('graficoJuego');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+
+        if(graficoJuego) graficoJuego.destroy();
+
+        graficoJuego = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: valoresCorrectos.map((_,i)=>i+1),
+                datasets: [{
+                    label: 'Sucesión del juego',
+                    data: valoresCorrectos,
+                    borderColor: 'rgb(19, 107, 165)',
+                    backgroundColor: 'rgba(19, 107, 165, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointBackgroundColor: 'rgb(19, 107, 165)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'n' } },
+                    y: { title: { display: true, text: 'Valor' } }
+                }
+            }
+        });
+
+    } else {
+        resultadoDiv.innerText = `Fallaste ${indicesFaltantes.length - aciertos} valor(es). Intenta de nuevo.`;
+    }
+}
+</script>
+</body>
+</html>

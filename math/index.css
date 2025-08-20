@@ -1,0 +1,263 @@
+/* Fuente y reset */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Títulos centrados */
+h1 {
+    font-size: 6rem;
+    letter-spacing: 3px;
+    margin-top: 20px;
+    margin-left: -35px;
+}
+
+h2 {
+    font-size: 3rem;
+    letter-spacing: -1px;
+    font-weight: normal;
+    margin-bottom: 20px;
+    position: absolute;
+    top: 24px;
+    left: 42rem;
+    margin-left: 35px;
+}
+
+/* Barra de navegación lineal */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 300px;
+}
+
+nav ul li {
+    display: inline-block;
+    position: relative;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: rgb(19, 107, 165);
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: rgb(19, 107, 165);
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Contenedor del gráfico */
+main#grafico {
+    margin-top: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+}
+
+/* Checkboxes de selección */
+main#grafico div {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+main#grafico label {
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Canvas del gráfico */
+canvas {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    max-width: 90%;
+}
+
+/* Sección del juego */
+section#juego {
+    margin-top: 50px;
+    text-align: center;
+    width: 80%;
+    max-width: 700px;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+section#juego h2 {
+    margin-bottom: 20px;
+    color: rgb(19, 107, 165);
+}
+
+/* Selector y botón generar */
+#tipoSucesion, section#juego button {
+    padding: 8px 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+#tipoSucesion:focus, section#juego button:hover {
+    outline: none;
+    border-color: rgb(19,107,165);
+    box-shadow: 0 0 8px rgba(19,107,165,0.3);
+    cursor: pointer;
+}
+
+/* Secuencia con inputs en cajas */
+#secuencia {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#secuencia span, #secuencia input {
+    display: inline-block;
+    width: 60px;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #f0f8ff;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+#secuencia input {
+    background-color: #fff;
+}
+
+#secuencia input:focus {
+    outline: none;
+    border-color: rgb(19,107,165);
+    box-shadow: 0 0 8px rgba(19,107,165,0.3);
+}
+
+/* Botón verificar */
+#verificarBtn {
+    display: none;
+    margin-top: 25px;
+    background-color: rgb(19, 107, 165);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+#verificarBtn:hover {
+    background-color: rgb(15, 85, 130);
+    cursor: pointer;
+}
+
+/* Resultado */
+#resultado {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Canvas del gráfico del juego */
+#graficoJuego {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    max-width: 90%;
+    margin-top: 30px;
+}
+
+/* Ajustes responsivos */
+@media screen and (max-width: 760px) {
+    h1 {
+        font-size: 3.5rem;
+        margin-left: 10px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        top: 50px;
+        left: 20px;
+        margin-left: 0;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    nav ul li a {
+        font-size: 20px;
+    }
+
+    main#grafico {
+        margin-top: 20px;
+        width: 95%;
+    }
+
+    main#grafico div {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    section#juego {
+        width: 95%;
+        padding: 20px 15px;
+        margin-top: 30px;
+    }
+
+    #tipoSucesion, section#juego button {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    #secuencia span, #secuencia input {
+        width: 45px;
+        padding: 6px;
+        font-size: 1rem;
+    }
+
+    #verificarBtn {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 16px;
+    }
+    
+    #graficoJuego {
+        width: 100%;
+    }
+}
